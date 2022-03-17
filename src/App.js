@@ -7,6 +7,7 @@ import Genres from './Components/Genres';
 import OneMovie from './Components/OneMovie';
 import OneGenre from './Components/OneGenre';
 import EditMovie from './Components/EditMovie';
+import { Fragment } from 'react/cjs/react.production.min';
 
 export default class App extends Component {
 
@@ -28,13 +29,25 @@ export default class App extends Component {
   }
 
   render(){
+
+    let loginLink;
+    console.log(this.state.jwt);
+    if (this.state.jwt === ""){
+      loginLink = <Link to="/login">Login</Link>
+    } else {
+      loginLink = <Link to="/logout" onClick={this.logout}>Logout</Link>
+    }
+
     return ( 
       <Router>
         <div className='container'>
           <div className='row'>
-            <h1 className='mt-3'>
-              Go Watch a Movie!
-            </h1>
+            <div className='col mt-3'>
+              <h1 className='mt-3'>Go Watch a Movie!</h1>
+            </div>
+            <div className='col mt-3 text-end'>
+              {loginLink}
+            </div>
             <hr className='mb-3'></hr>
           </div>
           <div className='row'>
@@ -50,12 +63,16 @@ export default class App extends Component {
                   <li className="list-group-item">                  
                     <Link to="/genres">Genres</Link>
                   </li>
-                  <li className="list-group-item">
-                    <Link to="/admin/movie/0">Add Movie</Link>
-                  </li>
-                  <li className="list-group-item">
-                    <Link to="/admin">Manage Catalogue</Link>
-                  </li>
+                  {this.state.jwt !== "" &&
+                    <Fragment>
+                      <li className="list-group-item">
+                        <Link to="/admin/movie/0">Add Movie</Link>
+                      </li>
+                      <li className="list-group-item">
+                        <Link to="/admin">Manage Catalogue</Link>
+                      </li>
+                    </Fragment>
+                  }
                 </ul>
               </nav>
             </div>
