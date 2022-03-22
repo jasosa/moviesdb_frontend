@@ -100,6 +100,13 @@ export default class EditMovie extends Component {
     }
 
     componentDidMount(){
+        if (this.props.jwt === ""){
+            this.props.history.push ({
+                pathname: "/login",
+            })
+            return; 
+        }
+
         const id = this.props.match.params.id;
         if (id > 0){
             fetch("http://localhost:4000/v1/movie/" + id)  
@@ -152,9 +159,18 @@ export default class EditMovie extends Component {
               {
                 label: 'Yes',
                 onClick: () => {
-                    fetch("http://localhost:4000/v1/admin/deletemovie/" + this.state.movie.id, {method: "GET"})
-                    .then(response => response.json)
-                    .then(data => {
+                    const myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("Authorization", "Bearer " + this.props.jwt);
+
+                    const requestOptions = {
+                        method: "GET",
+                        headers: myHeaders,
+                    };
+
+                    fetch("http://localhost:4000/v1/admin/deletemovie/" + this.state.movie.id, requestOptions)
+                    .then((response) => response.json)
+                    .then((data) => {
                         if (data.error){
                             this.setState({
                                 alert: {type:"alert-danger", message: data.error.message}
