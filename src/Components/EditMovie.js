@@ -9,7 +9,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export default class EditMovie extends Component {
-
     constructor(props){
         super(props)
         this.state = {
@@ -44,42 +43,43 @@ export default class EditMovie extends Component {
 
     handleSubmit = (evt) => {
         evt.preventDefault();
-
-        //client side validation
+        // do validation
         let errors = [];
-        if (this.state.movie.title === ""){
-            errors.push("title");
+        if (this.state.movie.title === "") {
+        errors.push("title");
         }
 
-        this.setState({errors: errors})
+        this.setState({ errors: errors });
 
         if (errors.length > 0) {
-            return false;
+        return false;
         }
 
+        // we passed, so post info
         const data = new FormData(evt.target);
         const payload = Object.fromEntries(data.entries());
-        console.log(payload); 
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + this.props.jwt);
 
         const requestOptions = {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify(payload),
-        }
-
-        fetch('http://localhost:4000/v1/admin/editmovie', requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error){
-                this.setState({
-                    alert: {type:"alert-danger", message: data.error.message},
-                })
-            } else {
-                console.log("success")
-                this.props.history.push({
-                    pathname: "/admin"
-                })
+            headers: myHeaders,
+        };
+        fetch("http://localhost:4000/v1/admin/editmovie", requestOptions)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.error) {
+                    this.setState({
+                    alert: { type: "alert-danger", message: data.error.message },
+                    });
+                } else {
+                    this.props.history.push({
+                    pathname: "/admin",
+                 });
             }
-        })
+        });
     }
 
 
