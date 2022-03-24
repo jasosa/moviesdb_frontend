@@ -56,8 +56,6 @@ export default class Login extends Component{
             body: JSON.stringify(payload),
         }
 
-        console.log(JSON.stringify(payload));
-
         fetch('http://localhost:4000/v1/admin/signin', requestOptions)
         .then((response) => response.json())
         .then((data) => {
@@ -70,6 +68,7 @@ export default class Login extends Component{
                 })
             } else {
                 this.handleJWTChange(Object.values(data)[0]);
+                window.localStorage.setItem("jwt", JSON.stringify(Object.values(data)[0]))
                 this.props.history.push({
                     pathname: "/admin"
                 })
